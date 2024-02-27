@@ -11,7 +11,8 @@ from deps import get_db
 router = APIRouter()
 
 
-@router.post("/movies/", response_model=schemas.MovieBase)
+@router.post("/movies/", response_model=schemas.MovieBase,
+             description="Rating should be set in 1 to 5 range, otherwise it will be Null")
 def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)) -> schemas.MovieBase:
     return crud.create_movie(db=db, movie=movie)
 
@@ -31,7 +32,8 @@ def get_movie_by_title(movie_title: str, db: Session = Depends(get_db)) -> schem
     return schemas.MovieBase(**crud.get_movie_by_title(movie_title, db).__dict__)
 
 
-@router.put("/movie_update/{movie_title}", response_model=schemas.MovieBase)
+@router.put("/movie_update/{movie_title}", response_model=schemas.MovieBase,
+            description="Rating should be set in 1 to 5 range, otherwise it will be Null")
 def movie_update_by_title(
         movie_title: str,
         movie: schemas.MovieUpdate,
@@ -39,7 +41,8 @@ def movie_update_by_title(
     return crud.update_movie_by_title(movie_title=movie_title, movie=movie, db=db)
 
 
-@router.put("/movie_update_by_id/{movie_id}", response_model=schemas.MovieBase)
+@router.put("/movie_update_by_id/{movie_id}", response_model=schemas.MovieBase,
+            description="Rating should be set in 1 to 5 range, otherwise it will be Null")
 def movie_update_by_id(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depends(get_db)) -> schemas.MovieBase:
     return crud.update_movie_by_id(movie_id, movie, db)
 
