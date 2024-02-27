@@ -41,7 +41,11 @@ def create_movie(movie: schemas.MovieCreate, db: Session):
         raise HTTPException(status_code=400, detail=f"Movie with title - {movie.title} already created")
     db_movie = models.Movie(
         title=movie.title.lower(),
-        description=movie.description)
+        description=movie.description,
+        watched=movie.watched,
+        rating=movie.rating if 1 <= movie.rating <= 5 else None,
+        reviews=movie.reviews,
+    )
     db.add(db_movie)
     db.commit()
     db.refresh(db_movie)
