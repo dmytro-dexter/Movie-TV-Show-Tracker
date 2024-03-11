@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
-import models
-from database import engine
-from misc import description
-from routers import router
+from src.models import models_movies
+from src.api.routers import register_api
+from src.database import engine
+from src.misc import description
 
-models.Base.metadata.create_all(bind=engine)
+models_movies.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Movie and TV Show Tracker",
@@ -17,7 +17,7 @@ app = FastAPI(
         email="dmytroboiko007@gmail.com",
     )
 )
-app.include_router(router)
+register_api(app)
 
 if __name__ == "__main__":
     import uvicorn

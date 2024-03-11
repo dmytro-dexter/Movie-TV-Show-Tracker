@@ -10,10 +10,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
- - Python 3.11+
- - Poetry
- - FastAPI
- - Postgresql
+- Python 3.11+
+- Poetry
+- FastAPI
+- Postgresql
 
 ### Installing
 
@@ -32,17 +32,17 @@ A step by step series of examples that tell you how to get a development env run
     poetry shell
     ```
 4. Run application via main.py file
-   
+
 #### Now you can open your browser and interact with this URL:
 
 * Automatic interactive documentation with Swagger UI: http://localhost/docs
 
-
 ## Built With
 
- - [FastAPI](https://fastapi.tiangolo.com/) - Web framework
- - [Postgresql](https://www.postgresql.org/) - Database management system
- - [Poetry](https://python-poetry.org/) - Python package and environment management.
+- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
+- [Postgresql](https://www.postgresql.org/) - Database management system
+- [Poetry](https://python-poetry.org/) - Python package and environment management.
 
 ## Author
+
 Dmytro Boiko - [dmytro-dexter](https://github.com/dmytro-dexter/)
