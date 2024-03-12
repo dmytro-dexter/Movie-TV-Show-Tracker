@@ -26,17 +26,20 @@ def get_review_by_id(review_id: int, db: Session) -> Review:
     return db_review
 
 
-def get_reviews(args: schemas.ReviewsGetRequest, offset: int, limit: int, db: Session) -> list[schemas.ReviewBase]:
+def get_reviews(args: schemas.ReviewsGetRequest, db: Session) -> list[schemas.ReviewBase]:
     filter_fields = {
         Review.title.key: args.search,
     }
 
-    review_objects = get_filtered_query(Review, db.query(Review), filter_fields).offset(offset).limit(limit).all()
+    review_objects = get_filtered_query(Review, db.query(Review), filter_fields).all()
     return [schemas.ReviewBase(**item.__dict__) for item in review_objects]
 
 
 def create_review(review: schemas.ReviewCreate, movie_id: int, db: Session):
-    db_review = Review(**review.dict(), movie_owner_id=movie_id)
+    db_review = Review(
+        text=review.text,
+        movie_id=movie_id,
+    )
     db.add(db_review)
     db.commit()
     db.refresh(db_review)

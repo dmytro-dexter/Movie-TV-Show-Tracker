@@ -45,7 +45,7 @@ def create_movie(movie: schemas.MovieCreate, db: Session):
         title=movie_title,
         description=movie.description,
         watched=movie.watched,
-        rating=movie.rating if 1 <= movie.rating <= 5 else None)
+        rating=movie.rating)
     db.add(db_movie)
     db.commit()
     db.refresh(db_movie)

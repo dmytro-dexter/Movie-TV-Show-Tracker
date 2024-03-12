@@ -15,7 +15,7 @@ def get_all_reviews(
         offset: int = 0,
         limit: int = 50,
 ) -> list[reviews.ReviewBase]:
-    return crud_reviews.get_reviews(args, offset, limit, db)
+    return crud_reviews.get_reviews(args, db)
 
 
 @router.get("/{review_id}", response_model=reviews.ReviewBase)

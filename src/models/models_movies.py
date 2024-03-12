@@ -13,7 +13,7 @@ class Movie(Base):
     watched = Column(Boolean, default=False)
     rating = Column(Integer)
 
-    reviews = relationship("Review", back_populates="owner")
+    reviews = relationship("Review", back_populates="movie")
 
 
 class Review(Base):
@@ -22,6 +22,6 @@ class Review(Base):
     id = Column(Integer, unique=True, primary_key=True, index=True)
     title = Column(String)
     text = Column(Text)
-    movie_owner_id = Column(Integer, ForeignKey("movies.id"))
+    movie_id = Column(Integer, ForeignKey("movies.id"))
 
-    movie_owner = relationship("Movie", back_populates="reviews")
+    movie = relationship("Movie", back_populates="reviews")
