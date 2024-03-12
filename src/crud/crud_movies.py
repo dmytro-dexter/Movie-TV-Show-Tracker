@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import HTTPException, Query
 from sqlalchemy.orm import Session
 
-from src.models.models_movies import Movie
+from src.models.models_movies import Movie, Review
 from src.schemas import movies as schemas
 
 

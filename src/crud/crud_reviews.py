@@ -35,6 +35,11 @@ def get_reviews(args: schemas.ReviewsGetRequest, db: Session) -> list[schemas.Re
     return [schemas.ReviewBase(**item.__dict__) for item in review_objects]
 
 
+def get_reviews_by_movie(movie_id: int, db: Session) -> list[schemas.ReviewBase]:
+    reviews = db.query(Review).filter(Review.movie_id == movie_id).all()
+    return [schemas.ReviewBase(**review.__dict__) for review in reviews]
+
+
 def create_review(review: schemas.ReviewCreate, movie_id: int, db: Session):
     db_review = Review(
         text=review.text,

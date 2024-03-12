@@ -2,8 +2,8 @@ from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 
 from src.api.deps import get_db
-from src.crud import crud_movies
-from src.schemas import movies
+from src.crud import crud_movies, crud_reviews
+from src.schemas import movies, reviews
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ def create_movie(movie: movies.MovieCreate, db: Session = Depends(get_db)) -> mo
     return crud_movies.create_movie(db=db, movie=movie)
 
 
-@router.put("/movies/{movie_id}", response_model=movies.MovieBase,
+@router.put("/{movie_id}", response_model=movies.MovieBase,
             description="Rating should be set in 1 to 5 range, otherwise it will be Null")
 def movie_update_by_id(movie_id: int,
                        movie: movies.MovieUpdate,
@@ -35,6 +35,6 @@ def movie_update_by_id(movie_id: int,
     return crud_movies.update_movie_by_id(movie_id, movie, db)
 
 
-@router.delete("/movies/{movie_id}")
+@router.delete("/{movie_id}")
 def delete_movie_by_id(movie_id: int, db: Session = Depends(get_db)) -> None:
     crud_movies.delete_movie_by_id(movie_id=movie_id, db=db)
