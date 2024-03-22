@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 
-from src.models import models_movies
 from src.api.routers import register_api
-from src.database import engine
+from src.database import engine, Base
 from src.misc import description
 
-models_movies.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Movie and TV Show Tracker",

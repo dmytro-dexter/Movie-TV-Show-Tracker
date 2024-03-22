@@ -2,8 +2,8 @@ from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 
 from src.api.deps import get_db
-from src.crud import crud_movies, crud_reviews
-from src.schemas import movies, reviews
+from src.crud import crud_movies
+from src.schemas import movies
 
 router = APIRouter()
 
