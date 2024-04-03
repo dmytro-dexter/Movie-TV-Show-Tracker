@@ -23,9 +23,12 @@ def get_movies(args: schemas.MoviesGetRequest, db: Session) -> list[schemas.Movi
         args.search,
         [models.Movie.title.key, models.Movie.id.key],
     )
-
     movie_objects = searched_movies.all()
-    return [schemas.MovieBase(**item.__dict__) for item in movie_objects]
+    if args.rating:
+        filtered_by_rating_movies = filter(lambda x: x.rating >= args.rating, movie_objects)
+        return sorted(filtered_by_rating_movies, key=lambda x: x.rating, reverse=True)
+
+    return sorted(movie_objects, key=lambda x: x.rating, reverse=True)
 
 
 def create_movie(movie: schemas.MovieCreate, db: Session) -> models.Movie:
@@ -61,5 +64,10 @@ def delete_movie_by_id(movie_id: int, db: Session) -> None:
     db_movie = get_movie_by_id(movie_id, db)
     if not db_movie:
         raise HTTPException(status_code=400, detail=f"Movie with ID {movie_id} does not exist")
+    db_reviews = get_filtered_query(models.Review, db.query(models.Review),
+                                    {models.Review.movie_id.key: movie_id}).all()
+
+    for review in db_reviews:
+        db.delete(review)
     db.delete(db_movie)
     db.commit()

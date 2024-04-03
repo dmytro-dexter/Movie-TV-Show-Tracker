@@ -38,3 +38,5 @@ class MoviesGetRequest:
     offset: int = Query(0, ge=0, description="The number of items to skip before returning the result set.")
     search: str | None = Query("", description="Search by Movie Title or ID.")
     watched: bool | None = Query(None, description="Filter by Movie Title.")
+    rating: int | None = Query(None, description="Insert lower desired rating of the movie")
+
