@@ -3,9 +3,10 @@ from sqlalchemy.orm import Session
 
 from src import models, schemas
 from src.query_builder import get_filtered_query, search_query
+from uuid import UUID
 
 
-def get_review_by_id(review_id: int, db: Session) -> models.Review:
+def get_review_by_id(review_id: UUID, db: Session) -> models.Review:
     db_review = get_filtered_query(models.Review, db.query(models.Review), {models.Review.id.key: review_id}).first()
     if not db_review:
         raise HTTPException(status_code=400, detail=f"Movie ID {review_id} not found")
@@ -27,7 +28,7 @@ def get_reviews(args: schemas.ReviewsGetRequest, db: Session) -> list[schemas.Re
     return [schemas.ReviewBase(**item.__dict__) for item in searched_reviews]
 
 
-def create_review(review: schemas.ReviewCreate, movie_id: int, db: Session):
+def create_review(review: schemas.ReviewCreate, movie_id: UUID, db: Session):
     movie_id_exists = db.query(db.query(models.Movie).filter(models.Movie.id == movie_id).exists()).scalar()
     if not movie_id_exists:
         raise HTTPException(status_code=400, detail=f"Movie ID {movie_id} does not exist")
@@ -43,7 +44,7 @@ def create_review(review: schemas.ReviewCreate, movie_id: int, db: Session):
     return db_review
 
 
-def update_review_by_id(review_id: int, review: schemas.ReviewUpdate, db: Session):
+def update_review_by_id(review_id: UUID, review: schemas.ReviewUpdate, db: Session):
     db_review = get_review_by_id(review_id, db)
     if not db_review:
         raise HTTPException(status_code=400, detail=f"Review with ID {review_id} does not exist")
@@ -57,7 +58,7 @@ def update_review_by_id(review_id: int, review: schemas.ReviewUpdate, db: Sessio
     return db_review
 
 
-def delete_review_by_id(review_id: int, db: Session) -> None:
+def delete_review_by_id(review_id: UUID, db: Session) -> None:
     db_review = get_review_by_id(review_id, db)
     if not db_review:
         raise HTTPException(status_code=400, detail=f"Review with ID {review_id} does not exist")

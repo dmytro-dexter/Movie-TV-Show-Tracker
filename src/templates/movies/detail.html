@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+<title>{{movie.title}}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h1 class="display-4 text-center">{{movie.title}}</h1>
+        <small class="text-muted">Movie Rating: {{movie.rating}}</small>
+        <p class="text-secondary my-4">{{movie.description}}</p>
+            {% for review in reviews %}
+            <div class="col-sm-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-text">{{ review.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Review Text : {{review.text}}</p>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+</div>
+{% endblock %}

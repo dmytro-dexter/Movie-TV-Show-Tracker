@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+<title>Movie</title>
+{% endblock %}
+
+
+{% block content %}
+{% with alert=alert %}
+    {% include "components/alert.html" %}
+{% endwith %}
+<div class="container">
+    <h1 class="text-muted">All Movies</h1>
+        <div class="row justify-content-center">
+
+            {% for movie in movies %}
+            <div class="col-sm-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-text">{{ movie.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Movie Rating : {{movie.rating}}</p>
+                        <small class="card-text text-muted">Description : {{movie.description}}</small>
+                        <br>
+                        <a href="/app/movie/{{movie.id}}" class="btn btn-outline-success">Read more</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+</div>
+
+{% endblock %}

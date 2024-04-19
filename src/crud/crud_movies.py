@@ -1,11 +1,13 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
 
 from src import schemas, models
 from src.query_builder import get_filtered_query, search_query
+from uuid import UUID
 
 
-def get_movie_by_id(movie_id: int, db: Session) -> schemas.MovieBase:
+def get_movie_by_id(movie_id: UUID, db: Session) -> schemas.MovieBase:
     db_movie = get_filtered_query(models.Movie, db.query(models.Movie), {models.Movie.id.key: movie_id}).first()
     if not db_movie:
         raise HTTPException(status_code=400, detail=f"Movie ID {movie_id} not found")
@@ -23,12 +25,12 @@ def get_movies(args: schemas.MoviesGetRequest, db: Session) -> list[schemas.Movi
         args.search,
         [models.Movie.title.key, models.Movie.id.key],
     )
-    movie_objects = searched_movies.all()
+    movie_objects = searched_movies.order_by(models.Movie.rating.desc()).all()
     if args.rating:
         filtered_by_rating_movies = filter(lambda x: x.rating >= args.rating, movie_objects)
-        return sorted(filtered_by_rating_movies, key=lambda x: x.rating, reverse=True)
+        return filtered_by_rating_movies
 
-    return sorted(movie_objects, key=lambda x: x.rating, reverse=True)
+    return movie_objects
 
 
 def create_movie(movie: schemas.MovieCreate, db: Session) -> models.Movie:
@@ -40,18 +42,21 @@ def create_movie(movie: schemas.MovieCreate, db: Session) -> models.Movie:
         title=movie.title,
         description=movie.description,
         watched=movie.watched,
-        rating=movie.rating)
+        rating=movie.rating,
+        author_id=movie.author_id,
+    )
     db.add(db_movie)
     db.commit()
     db.refresh(db_movie)
     return db_movie
 
 
-def update_movie_by_id(movie_id: int, movie: schemas.MovieUpdate, db: Session):
+def update_movie_by_id(movie_id: UUID, movie: schemas.MovieUpdate, db: Session, author_id: UUID):
     db_movie = get_movie_by_id(movie_id, db)
     if not db_movie:
-        raise HTTPException(status_code=400, detail=f"Movie with ID {movie_id} does not exist")
-
+        return {"error": f"Movie with ID {movie_id} does not exist"}
+    if not db_movie.author_id == author_id:
+        return {"error": "Only author may update the movie"}
     for key, value in schemas.MovieUpdate(**movie.__dict__):
         setattr(db_movie, key, value)
     db.add(db_movie)
@@ -60,10 +65,12 @@ def update_movie_by_id(movie_id: int, movie: schemas.MovieUpdate, db: Session):
     return db_movie
 
 
-def delete_movie_by_id(movie_id: int, db: Session) -> None:
+def delete_movie_by_id(movie_id: UUID, db: Session, author_id: UUID):
     db_movie = get_movie_by_id(movie_id, db)
     if not db_movie:
-        raise HTTPException(status_code=400, detail=f"Movie with ID {movie_id} does not exist")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    if not db_movie.author_id == author_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Only author can delete")
     db_reviews = get_filtered_query(models.Review, db.query(models.Review),
                                     {models.Review.movie_id.key: movie_id}).all()
 

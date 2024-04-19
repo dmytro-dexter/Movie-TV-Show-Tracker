@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from fastapi import Query
 from pydantic import BaseModel, Field
 from src.schemas.reviews import ReviewBase
+from uuid import UUID
 
 
 class MovieCreate(BaseModel):
@@ -10,10 +11,11 @@ class MovieCreate(BaseModel):
     description: str | None = None
     watched: bool = False
     rating: int | None = Field(None, qe=1, le=5)
+    author_id: UUID
 
 
 class MovieBase(BaseModel):
-    id: int
+    id: UUID
     title: str
     description: str | None = None
     watched: bool = False
@@ -39,4 +41,3 @@ class MoviesGetRequest:
     search: str | None = Query("", description="Search by Movie Title or ID.")
     watched: bool | None = Query(None, description="Filter by Movie Title.")
     rating: int | None = Query(None, description="Insert lower desired rating of the movie")
-
